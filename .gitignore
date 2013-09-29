@@ -1,0 +1,22 @@
+# Linux
+*~
+
+# Mac OS X
+.DS_Store
+._*
+
+# Windows
+Thumbs.db
+
+# Eclipse
+.settings/
+.cproject
+.project
+
+# Cursal Development Kit
+/bin/
+/build/
+/doc/
+/lib/
+/thirdparty/
+/tools/
