@@ -33,6 +33,16 @@
 //                                   MACROS
 //=============================================================================
 
+//-----------------------------------------------------------------------------
+// Configuration
+//-----------------------------------------------------------------------------
+
+// CDK version in major level, minor level, patch level and development stage.
+#define CDK_VERSION_MAJOR 1
+#define CDK_VERSION_MINOR 0
+#define CDK_VERSION_PATCH 0
+#define CDK_VERSION_DEVST 1
+
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 
 #endif	// CDK_DEFINES_H

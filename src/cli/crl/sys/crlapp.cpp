@@ -54,7 +54,10 @@ using std::vector;
 CrlApp::CrlApp(int &_argc, char *_argv[]) :
 	m_argc(_argc),
 	m_argv(_argv),
-	m_result(0)
+	m_result(0),
+	m_mode(0),
+	m_autoload(false),
+	m_compress(false)
 {
 	// Application name
 	fs::path _path(m_argv[0]);
@@ -62,37 +65,61 @@ CrlApp::CrlApp(int &_argc, char *_argv[]) :
 
     try
 	{
-		m_opts.add_options()
-			("compress,c", "Enable compression.")
-			//("encrypt,e", "Enable encryption.")
-			("exclude", 
-				po::value<vector<string>>(&m_excludes)->composing(),
-				"List of excluded files.")
-			("file,f", 
-				po::value<string>(&m_carFile)->required(),
+    	// Operations
+    	m_operations.add_options()
+			("create,c",  "Create a new CRL file.")
+			("list,l",    "List the contents of a CRL file.")
+			("extract,x", "Extract files from a CRL file.")
+		;
+    	m_allOpts.add(m_operations);
+
+    	// Options
+    	m_options.add_options()
+			("autoload",
+					po::value(&m_autoload)->zero_tokens(),
+					"Enable default autoload."
+			)
+			("compress",
+					po::value(&m_compress)->zero_tokens(),
+					"Enable default compression."
+			)
+			/*("encrypt",
+					po::value(&m_encrypt)->zero_tokens(),
+					"Enable default encryption."
+			)*/
+			("file,f",
+				po::value<string>(&m_outFile),
 				"Path of CRA file.")
 			("help,h", "Show this help.")
 			("rev,r", 
 				po::value<string>(&m_revStr)->default_value("0"), 
-				"CDK version required to evaluate the CRA file.")
+				"CDK version required to evaluate the CRL file.")
 			("verbose,v", "Enable verbosity.")
 			("version", "Print version.")
 		;
-  
-			//("source,s", 
-			//	po::value<vector<string>>(&m_srcPaths)->required()->composing(),
-			//	"List of directories and files.")
+    	m_allOpts.add(m_options);
 
-        po::store(po::parse_command_line(m_argc, m_argv, m_opts), m_vm);
+    	// Directories and files
+    	m_allOpts.add_options()
+			("include,i",
+			po::value<vector<string>>(&m_incPaths)->composing(),
+			"List of directories and files.")
+		;
+
+		po::store(po::parse_command_line(m_argc, m_argv, m_allOpts), m_vm);
+		po::notify(m_vm);
     }
-	catch (std::exception *_e)
-	{
-		setErr(_e);
-	}
 	catch (...)
 	{
-		setErr();
+		setError();
 	}
+
+	if (m_vm.count("create"))
+		m_mode |= 0x1;
+	if (m_vm.count("list"))
+		m_mode |= 0x2;
+	if (m_vm.count("extract"))
+		m_mode |= 0x4;
 }
 
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
@@ -106,66 +133,106 @@ int CrlApp::exec()
 {
 	if (!m_result)
 	{
-		try
-		{
+		if (m_vm.count("help"))
 			showHelp();
-			if (m_vm.count("help"))
-			{
-				showHelp();
-			}
-			else
-			{
-				po::notify(m_vm);
-			}
-		}
-		catch (std::exception *_e)
+		else if (m_vm.count("version"))
+			showVersion();
+		else if (m_mode && !(m_mode & (m_mode - 1)))
 		{
-			setErr(_e);
+			if (m_mode & 0x1)
+				performCreation();
+			else if (m_mode & 0x2)
+				performListing();
+			else if (m_mode & 0x4)
+				performExtraction();
 		}
-		catch (...)
-		{
-			setErr();
-		}
+		else
+			setError("You must specify one of the the \"-clx\" options.");
 	}
 
-#ifdef DEBUG 
-	std::cin.get();
-#endif
+	checkError();
 
 	return m_result;
 }
 
+/* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 void CrlApp::showHelp()
 {
-	cout << "Name:" << endl
-		 << "-----" << endl << endl
-
+	cout << "Name:"                                        << endl
+		 << "-----"                                        << endl << endl
 		 << "  " << m_appName 
-		 << " - CRA archiving utility" << endl << endl
+		 << " - CRL archiving utility"                     << endl << endl
 
-		 << "Synopsis:" << endl
-		 << "---------" << endl << endl
+		 << "Synopsis:"                                    << endl
+		 << "---------"                                    << endl << endl
+		 << "  " << m_appName
+		 << " <Operation> [Options] [Directories | Files]" << endl << endl
 
-		 << "  " << m_appName 
-		 << " [Options] [Directories | Files]" << endl << endl
+		 << "Operations:"                                  << endl
+		 << "-----------"                                  << endl << endl
+	     << m_operations                                   << endl
 
-		 << "Options:" << endl
-		 << "--------" << endl << endl
-	     << m_opts
-		 ;
+		 << "Options:"                                     << endl
+		 << "--------"                                     << endl << endl
+	     << m_options
+	;
 }
+
+/* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
+void CrlApp::showVersion()
+{
+	cout << "CRL archiving utility" << endl;
+}
+
+/* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
+void CrlApp::performCreation()
+{
+
+}
+
+/* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
+void CrlApp::performListing()
+{
+
+}
+
+/* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
+void CrlApp::performExtraction()
+{
+
+}
+
+//=============================================================================
+//                                  PROTECTED
+//=============================================================================
+
+//-----------------------------------------------------------------------------
+// Protected static member variables
+//-----------------------------------------------------------------------------
 
 
 //=============================================================================
 //                                   PRIVATE
 //=============================================================================
 
+/* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
+void CrlApp::checkError()
+{
+	if (m_result)
+	{
+		if (m_errMsg.empty())
+			cout << m_appName << ": Unknown error occured!" << endl;
+		else
+			cout << m_appName << ": " << m_errMsg << endl;
+
+		cout << "Try \"" << m_appName
+		     << " --help\" for more information." << endl;
+	}
+}
+
 //-----------------------------------------------------------------------------
 // Private static member variables
 //-----------------------------------------------------------------------------
-
-const char *CrlApp::ErrHeadStr    = "Error: ";
-const char *CrlApp::ErrUnknownStr = "Unknown error occured!";
 
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 

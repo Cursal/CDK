@@ -26,19 +26,8 @@
 //                                   HEADERS
 //=============================================================================
 
-// Boost
-#include <boost/filesystem.hpp>
-#include <boost/program_options.hpp>
 // CDK
-#include <CDK/Core>
-#include <iostream>
-#include <string>
 #include "sys/crlapp.h"
-
-/* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
-
-namespace fs = boost::filesystem;
-namespace po = boost::program_options;
 
 //=============================================================================
 //                                   PUBLIC
@@ -48,40 +37,5 @@ namespace po = boost::program_options;
 int main(int _argc, char *_argv[])
 {
 	CDK::CrlApp _app(_argc, _argv);
-    return _app.exec();
-
-    try
-	{
-
-        po::options_description _opts("Allowed options");
-        _opts.add_options()
-            ("compress,c", "Enable compression.")
-            //("e,encrypt", ???, "Enable encryption.")
-            ("help,h", "Show this help.")
-        ;
-
-        po::variables_map _vm;        
-        po::store(po::parse_command_line(_argc, _argv, _opts), _vm);
-        po::notify(_vm);    
-
-        if (_vm.count("help")) {
-			//printHelp(_opts);
-            return 0;
-        }
-
-    }
-    catch (std::exception &_e)
-	{
-        std::cerr << "Error: " << _e.what() << std::endl;
-        return 1;
-    }
-    catch (...)
-	{
-        std::cerr << "Unknown error occured!" << std::endl;
-        return 1;
-    }
-
-	std::cin.get();
-
-    return 0;
+	return _app.exec();
 }

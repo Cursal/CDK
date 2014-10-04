@@ -50,7 +50,7 @@ namespace CDK
 /*!
  * \ingroup system
  *
- * \brief Application class to initialize CursalCra as command-line tool.
+ * \brief Application class to initialize CrlApp as command-line tool.
  */
 class CrlApp
 {
@@ -62,7 +62,7 @@ class CrlApp
 public:
 	
 	/*!
-	 * \brief Initializes CursalCra.
+	 * \brief Initializes CrlApp.
 	 * 
 	 * \param[in] _argc Argument count
 	 * \param[in] _argv Argument vector
@@ -70,51 +70,76 @@ public:
 	CrlApp(int &_argc, char *_argv[]);
 	
 	/*!
-	 * \brief Terminates CursalCra.
+	 * \brief Terminates CrlApp.
 	 */
 	virtual ~CrlApp();
 
 	/*!
-	 * \brief Main procedure of CursalCra.
+	 * \brief Main procedure of CrlApp.
 	 * 
 	 * It should only be called once.
 	 */
 	int exec();
-	
+
+	/*!
+	 * \brief Shows help with syntax and allowed options of CRL archiving
+	 *        utility.
+	 */
 	void showHelp();
+
+	/*!
+	 * \brief Shows version of CRL archiving utility.
+	 */
+	void showVersion();
+
+	/*!
+	 * \brief Performs creation of a CRL file.
+	 */
+	void performCreation();
+
+	/*!
+	 * \brief Performs listing of a CRL file.
+	 */
+	void performListing();
+
+	/*!
+	 * \brief Performs extraction of a CRL file.
+	 */
+	void performExtraction();
+
+//=============================================================================
+//                                  PROTECTED
+//=============================================================================
+
+protected:
+
+	/*!
+	 * \brief Sets error message.
+	 *
+	 * \param[in] _errorMsg Error message
+	 */
+	inline void setError(const char* _errorMsg = nullptr)
+	{
+		if (_errorMsg)
+			m_errMsg = _errorMsg;
+
+		m_result = 1;
+	}
 
 //=============================================================================
 //                                   PRIVATE
 //=============================================================================
 
 private:
-	
-	inline void resetErr()
-	{
-		m_result = 0;
-		m_errStr.clear();
-	}
 
-	inline void setErr(const std::exception *_e = nullptr)
-	{
-		m_result = 1;
-		if (_e)
-		{
-			m_errStr = ErrHeadStr;
-			m_errStr.append(_e->what());
-		}
-		else
-		{
-			m_errStr = ErrUnknownStr;
-		}
-	}
-	
+	/*!
+	 * \brief If error occured, show error message with further information.
+	 */
+	void checkError();
+
 //-----------------------------------------------------------------------------
 // Private static member variables
 //-----------------------------------------------------------------------------
-
-	static const char *ErrHeadStr;
-	static const char *ErrUnknownStr;
 
 //-----------------------------------------------------------------------------
 // Private member variables
@@ -124,17 +149,22 @@ private:
 	char                                        **m_argv;
 
 	int                                           m_result;
-	std::string                                   m_errStr;
-	
+	std::string                                   m_errMsg;
+
 	std::string                                   m_appName;
-	
-	boost::program_options::options_description   m_opts;
+
+	boost::program_options::options_description   m_operations;
+	boost::program_options::options_description   m_options;
+	boost::program_options::options_description   m_allOpts;
 	boost::program_options::variables_map         m_vm;
 
-	std::string                                   m_carFile;
-	std::vector<std::string>                      m_srcPaths;
-	std::vector<std::string>                      m_excludes;
+	int                                           m_mode;
+	bool                                          m_autoload;
+	bool                                          m_compress;
+	//bool                                          m_encrypt;
+	std::string                                   m_outFile;
 	std::string                                   m_revStr;
+	std::vector<std::string>                      m_incPaths;
 
 };		// class CrlApp
 
