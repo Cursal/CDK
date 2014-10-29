@@ -53,6 +53,10 @@ class BoostBuilder
   INC_DIR = 'include'
   # Default library directory relative to +DST_DIR+
   LIB_DIR = 'lib'
+  # Pass to --with-* option
+  WITH_LIB = [
+    'filesystem', 'program_options', 'system'
+  ]
 
 #==============================================================================
 #                                   PUBLIC
@@ -64,7 +68,9 @@ class BoostBuilder
     @cur_path = Dir.getwd
     @src_path = EnvCheck.find_dir(/BOOST/i, 'unknown')
     @dst_path = File.expand_path(File.join(File.dirname(__FILE__), DST_DIR))
-
+    @with_lib = WITH_LIB.join(' --with-')
+    @with_lib.insert(0, '--with-')
+    
     puts("The source code directory is: #{@src_path}")
     puts("The destination directory is: #{@dst_path}")
     
@@ -89,6 +95,7 @@ class BoostBuilder
       _result   = configure
       _result &&= compile
       _result &&= install
+      _result &&= bcp
     end
   end
 
@@ -103,39 +110,79 @@ class BoostBuilder
     Dir.chdir(@src_path)
     
     if EnvCheck.windows?
-      _cmd = './bootstrap.bat mingw'
+      _cmd = 'bootstrap.bat mingw '
     else
-      _cmd = './bootstrap.sh'
+      _cmd = 'bootstrap.sh '
     end
-    
+
     system(_cmd)
   end
 
   # Compiles Boost.
   def compile
-    system('./b2 --clean')
+    system('b2 --clean')
     
-    _cmd  = './b2 '
+    _cmd  = 'b2 '
+    
     _cmd << '--build-dir="build" '
+    _cmd << "#{@with_lib} "
+    
     _cmd << 'toolset=gcc '
+    _cmd << 'variant=release '
     _cmd << 'stage '
     
     system(_cmd)
-    
-    Dir.exist?('stage')
   end
 
   # Installs Boost.
   def install
-    FileUtils.mkdir_p(@dst_path)
-    Dir.chdir(@src_path)
+    _cmd  = 'b2 '
     
-    _inc_path = File.join(@dst_path, INC_DIR)
-    _lib_path = File.join(@dst_path, LIB_DIR)
+    _cmd << "--prefix=\"#{@dst_path}\" "
 
-    FileUtils.mkdir_p(_inc_path)
-    FileUtils.mv('boost', _inc_path)
-    FileUtils.mv('stage/lib', _lib_path)
+    _cmd << '--build-dir="build" '
+    _cmd << "#{@with_lib} "
+    
+    _cmd << 'toolset=gcc '
+    _cmd << 'variant=release '
+    _cmd << 'install '
+
+    system(_cmd)
+  end
+
+  # Compiles and executes +bcp+ executable to shrink Boost.
+  def bcp
+    Dir.chdir(File.join(@src_path, 'tools/bcp'))
+    
+    # Compile +bcp+ executable.
+    _cmd  = '../../b2 '
+    _cmd << '--build-dir="build" '
+    _cmd << 'toolset=gcc '
+    system(_cmd)
+    
+    # Find +bcp+ executable.
+    _pattern = File.join(@src_path, 'tools/bcp/build', '**', 'bcp{,.exe}')
+    _bcp = Dir.glob(_pattern).find do |_p| 
+      File.file?(_p)
+    end
+    return false unless _bcp
+
+    # Find oversized include directory of installed Boost.
+    _inc_dir = File.join(@dst_path, INC_DIR)
+    _base = Dir.glob(File.join(_inc_dir, 'boost-*')).find do |_p| 
+      File.directory?(_p)
+    end
+    Dir.chdir(_base)
+    return false unless _base
+
+    # Run +bcp+ executable.
+    _cmd = [_bcp, WITH_LIB, _inc_dir].flatten
+    system(*_cmd)
+    return false unless File.exist?(File.join(_inc_dir, 'boost'))
+
+    # Remove oversized include directory of installed Boost.
+    Dir.chdir(@dst_path)
+    FileUtils.rm_rf(_base)
   end
   
 end # class BoostBuilder
