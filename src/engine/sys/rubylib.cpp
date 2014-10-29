@@ -26,15 +26,14 @@
 //                                   HEADERS
 //=============================================================================
 
-// Ruby
+#include "rubylib.h"
+
 #if defined (_MSC_VER) && _MSC_VER > 1600
-#	define _ALLOW_KEYWORD_MACROS
+# define _ALLOW_KEYWORD_MACROS
 #endif
 #include <ruby.h>
 #include <ruby/encoding.h>
 #undef _ALLOW_KEYWORD_MACROS
-// CDK
-#include "rubylib.h"
 
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 
@@ -48,26 +47,26 @@ namespace CDK
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 void RubyLib::startup()
 {
-	static RubyLib _instance;
+  static RubyLib _instance;
 }
 
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 void RubyLib::cleanup()
 {
-	// Nothing to do yet.
+  // Nothing to do yet.
 }
 
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 void RubyLib::shutdown()
 {
-	// Nothing to do yet.
+  // Nothing to do yet.
 }
 
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 void RubyLib::setArgv(int &_argc, char *_argv[])
 {
-	if (_argc > 1)
-		ruby_set_argv(_argc - 1, _argv + 1);
+  if (_argc > 1)
+    ruby_set_argv(_argc - 1, _argv + 1);
 }
 
 //=============================================================================
@@ -77,30 +76,30 @@ void RubyLib::setArgv(int &_argc, char *_argv[])
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 RubyLib::RubyLib()
 {
-	// Ruby initialization
-    char* _argv[] = { NULL };
-    int   _argc   = static_cast<int>(
-		(sizeof(_argv) / sizeof(_argv[0])) - 1
-	);
+  // Ruby initialization
+  char* _argv[] = { NULL };
+  int   _argc   = static_cast<int>(
+    (sizeof(_argv) / sizeof(_argv[0])) - 1
+  );
 
-	ruby_sysinit(&_argc, reinterpret_cast<char ***>(&_argv));
-	RUBY_INIT_STACK;
-	ruby_init();
+  ruby_sysinit(&_argc, reinterpret_cast<char ***>(&_argv));
+  RUBY_INIT_STACK;
+  ruby_init();
 
-	// Set default encoding to UTF-8
-	rb_enc_set_default_external(rb_str_new2("UTF-8"));
-	
-	// Insert current working directory in $LOAD_PATH
-	ruby_init_loadpath();
-	rb_ary_push(rb_gv_get("$LOAD_PATH"), rb_dir_getwd());
+  // Set default encoding to UTF-8
+  rb_enc_set_default_external(rb_str_new2("UTF-8"));
+  
+  // Insert current working directory in $LOAD_PATH
+  ruby_init_loadpath();
+  rb_ary_push(rb_gv_get("$LOAD_PATH"), rb_dir_getwd());
 }
 
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 RubyLib::~RubyLib()
 {
-	ruby_cleanup(0);
+  ruby_cleanup(0);
 }
 
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 
-}	// namespace CDK
+}  // namespace CDK

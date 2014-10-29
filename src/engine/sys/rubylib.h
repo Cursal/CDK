@@ -23,17 +23,16 @@
 \*****************************************************************************/
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-#	pragma once
+# pragma once
 #endif
 
 #ifndef CDK_RUBYLIB_H
-#	define CDK_RUBYLIB_H
+# define CDK_RUBYLIB_H
 
 //=============================================================================
 //                                   HEADERS
 //=============================================================================
 
-// CDK
 #include <CDK/Core>
 #include <CDK/NonCopyable.h>
 
@@ -59,29 +58,29 @@ class RubyLib : public NonCopyable
 //=============================================================================
 
 public:
-	
-	/*!
-	 * \brief Performs the global startup of Ruby.
-	 */
-	static void startup();
-	
-	/*!
-	 * \brief Performs the global cleanup of Ruby.
-	 */
-	static void cleanup();
-	
-	/*!
-	 * \brief Performs the global shutdown of Ruby.
-	 */
-	static void shutdown();
+  
+  /*!
+   * \brief Performs the global startup of Ruby.
+   */
+  static void startup();
+  
+  /*!
+   * \brief Performs the global cleanup of Ruby.
+   */
+  static void cleanup();
+  
+  /*!
+   * \brief Performs the global shutdown of Ruby.
+   */
+  static void shutdown();
 
-	/*!
-	 * \brief Sets the ARGV constant in Ruby environment.
-	 * 
-	 * \param[in] _argc Argument count
-	 * \param[in] _argv Argument vector
-	 */
-	static void setArgv(int &_argc, char *_argv[]);
+  /*!
+   * \brief Sets the ARGV constant in Ruby environment.
+   * 
+   * \param[in] _argc Argument count
+   * \param[in] _argv Argument vector
+   */
+  static void setArgv(int &_argc, char *_argv[]);
 
 //=============================================================================
 //                                   PRIVATE
@@ -89,22 +88,22 @@ public:
 
 private:
 
-	/*!
-	 * \brief Initializes Ruby.
-	 */
-	RubyLib();
-	
-	/*!
-	 * \brief Terminates Ruby.
-	 *
-	 * When the application is closed, Ruby will be automatically terminated.
-	 */
-	virtual ~RubyLib();
+  /*!
+   * \brief Initializes Ruby.
+   */
+  RubyLib();
+  
+  /*!
+   * \brief Terminates Ruby.
+   *
+   * When the application is closed, Ruby will be automatically terminated.
+   */
+  virtual ~RubyLib();
 
-};		// class RubyLib
+};      // class RubyLib
 
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 
-}		// namespace CDK
+}       // namespace CDK
 
-#endif	// CDK_RUBYLIB_H
+#endif  // CDK_RUBYLIB_H

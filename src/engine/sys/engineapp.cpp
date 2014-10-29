@@ -26,13 +26,11 @@
 //                                   HEADERS
 //=============================================================================
 
-// SFML
 #include "engineapp.h"
 
-#include <SFML/Graphics.hpp>
-// Boost
 #include <boost/filesystem.hpp>
-// CDK
+#include <SFML/Graphics.hpp>
+
 #include "ruby.h"
 #include "rubylib.h"
 
@@ -48,53 +46,53 @@ namespace CDK
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 EngineApp::EngineApp(int &_argc, char *_argv[])
 {
-	// Set working directory to executable to avoid missing game files.
-	// Possible errors are ignored.
-	boost::system::error_code _ec;
-	boost::filesystem::current_path(
-		boost::filesystem::system_complete(_argv[0]).parent_path(), _ec
-	);
+  // Set working directory to executable to avoid missing game files.
+  // Possible errors are ignored.
+  boost::system::error_code _ec;
+  boost::filesystem::current_path(
+    boost::filesystem::system_complete(_argv[0]).parent_path(), _ec
+  );
 
-	RubyLib::startup();
-	RubyLib::setArgv(_argc, _argv);
+  RubyLib::startup();
+  RubyLib::setArgv(_argc, _argv);
 }
 
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 EngineApp::~EngineApp()
 {
-	RubyLib::shutdown();
+  RubyLib::shutdown();
 }
 
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 int EngineApp::exec()
 {
-	int error;
-	rb_protect((VALUE (*)(VALUE))rb_require, (VALUE)"main.rb", &error);
+  int error;
+  rb_protect((VALUE (*)(VALUE))rb_require, (VALUE)"main.rb", &error);
 
-	//if (error)
-	//	MsgBox::showInfo("1", "2");
+  //if (error)
+  //  MsgBox::showInfo("1", "2");
 
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    sf::CircleShape shape(200.f);
-    shape.setFillColor(sf::Color::Green);
+  sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
+  sf::CircleShape shape(200.f);
+  shape.setFillColor(sf::Color::Green);
 
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
+  while (window.isOpen())
+  {
+      sf::Event event;
+      while (window.pollEvent(event))
+      {
+          if (event.type == sf::Event::Closed)
+              window.close();
+      }
 
-        window.clear();
-        window.draw(shape);
-        window.display();
-    }
+      window.clear();
+      window.draw(shape);
+      window.display();
+  }
 
-	return 0;
+  return 0;
 }
 
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 
-}	// namespace CDK
+}  // namespace CDK

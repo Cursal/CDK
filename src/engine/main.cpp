@@ -34,6 +34,6 @@
 
 int main(int _argc, char *_argv[])
 {
-	CDK::EngineApp _app(_argc, _argv);
-    return _app.exec();
+  CDK::EngineApp _app(_argc, _argv);
+  return _app.exec();
 }

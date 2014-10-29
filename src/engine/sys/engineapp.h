@@ -23,11 +23,11 @@
 \*****************************************************************************/
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-#	pragma once
+# pragma once
 #endif
 
 #ifndef CDK_ENGINEAPP_H
-#	define CDK_ENGINEAPP_H
+# define CDK_ENGINEAPP_H
 
 //=============================================================================
 //                                   HEADERS
@@ -57,37 +57,37 @@ class EngineApp
 //=============================================================================
 
 public:
-	
-	/*!
-	 * \brief Initializes Ruby and CDK.
-	 * 
-	 * Please note, that Ruby will be initialized once per application process
-	 * and will be automatically terminated after the application is closed.
-	 * 
-	 * \param[in] _argc Argument count
-	 * \param[in] _argv Argument vector
-	 */
-	EngineApp(int &_argc, char *_argv[]);
-	
-	/*!
-	 * \brief Terminates CDK.
-	 *
-	 * Please note, that Ruby will be initialized once per application process
-	 * and will be automatically terminated after the application is closed.
-	 */
-	virtual ~EngineApp();
+  
+  /*!
+   * \brief Initializes Ruby and CDK.
+   * 
+   * Please note, that Ruby will be initialized once per application process
+   * and will be automatically terminated after the application is closed.
+   * 
+   * \param[in] _argc Argument count
+   * \param[in] _argv Argument vector
+   */
+  EngineApp(int &_argc, char *_argv[]);
+  
+  /*!
+   * \brief Terminates CDK.
+   *
+   * Please note, that Ruby will be initialized once per application process
+   * and will be automatically terminated after the application is closed.
+   */
+  virtual ~EngineApp();
 
-	/*!
-	 * \brief Main procedure of CDK.
-	 * 
-	 * It should only be called once.
-	 */
-	int exec();
+  /*!
+   * \brief Main procedure of CDK.
+   * 
+   * It should only be called once.
+   */
+  int exec();
 
-};		// class EngineApp
+};      // class EngineApp
 
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 
-}		// namespace CDK
+}       // namespace CDK
 
-#endif	// CDK_ENGINEAPP_H
+#endif  // CDK_ENGINEAPP_H
