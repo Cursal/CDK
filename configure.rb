@@ -44,6 +44,13 @@ module CDK
 class Configuration
 
 #==============================================================================
+#                                  CONSTANTS
+#==============================================================================
+
+  # Specifies what build type will be built in this build tree by default.
+  DEFAULT_BUILD_TYPE = 'Debug'
+
+#==============================================================================
 #                                   PUBLIC
 #==============================================================================
 
@@ -84,6 +91,11 @@ class Configuration
             _cmd << _arg << ' '
           end
         end
+      end
+      
+      # Default build type
+      if !ARGV.any? { |_a| _a =~ /CMAKE_BUILD_TYPE/ }
+        _cmd << "-D CMAKE_BUILD_TYPE=\"#{DEFAULT_BUILD_TYPE}\" "
       end
       
       # Default install prefix
