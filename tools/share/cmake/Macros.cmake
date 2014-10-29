@@ -42,45 +42,32 @@ macro(cdk_set_prefix_path var path)
     endif()
 endmacro()
 
-# Adds a new target as executable or library.
-macro(cdk_add_target target)
+# Adds a new target as executable.
+macro(cdk_add_executable target)
     # Parse arguments.
     cmake_parse_arguments(
         THIS "" ""
-        "AS;GROUP;SOURCES;DEPENDS;REQUIRES"
+        "SOURCES;DEPENDS;EXTERNALS;DESTINATION"
         "${ARGN}"
     )
-    if(NOT THIS_GROUP)
-        set(THIS_GROUP "${target}")
+    if(NOT THIS_DESTINATION)
+        set(THIS_DESTINATION "bin/${target}")
     endif()
     
     # Create target.
-    string(TOUPPER "${THIS_AS}" THIS_AS)
-    if("${THIS_AS}" STREQUAL "LIB")
-        add_library("${target}" ${THIS_SOURCES})
-    else()
-        add_executable("${target}" ${THIS_SOURCES})
-    endif()
-    
+    add_executable("${target}" ${THIS_SOURCES})
+
     # Link the target to its library dependencies.
     if(THIS_DEPENDS)
         target_link_libraries(${target} ${THIS_DEPENDS})
     endif()
     
     # Add install rule for compiled target.
-    install(
-        TARGETS "${target}"
-        RUNTIME DESTINATION "bin/${THIS_GROUP}"
-        LIBRARY DESTINATION "lib"
-        ARCHIVE DESTINATION "lib"
-    )
+    install(TARGETS "${target}" DESTINATION "${THIS_DESTINATION}")
     
-    # Add install rule for required files.
-    if(THIS_REQUIRES)
-        install(
-            FILES ${THIS_REQUIRES}
-            DESTINATION "bin/${THIS_GROUP}"
-        )
+    # Add install rule for external files.
+    if(THIS_EXTERNALS)
+        install(FILES ${THIS_EXTERNALS} DESTINATION "${THIS_DESTINATION}")
     endif()
     
     # Add install rules for MinGW DLLs.
@@ -91,7 +78,32 @@ macro(cdk_add_target target)
         
         install(
             FILES ${LIBGCC_DLL} ${LIBSTDC_DLL} ${MSVCRT_DLL}
-            DESTINATION "bin/${THIS_GROUP}"
+            DESTINATION "${THIS_DESTINATION}"
         )
     endif()
+endmacro()
+
+# Adds a new target library.
+macro(cdk_add_library target)
+    # Parse arguments.
+    cmake_parse_arguments(
+        THIS "" ""
+        "SOURCES;DEPENDS;DESTINATION"
+        "${ARGN}"
+    )
+    if(NOT THIS_DESTINATION)
+        set(THIS_DESTINATION "lib")
+    endif()
+
+    # Create target.
+    add_library("${target}" ${THIS_SOURCES})
+    set_target_properties("${target}" PROPERTIES DEBUG_POSTFIX "-d")
+
+    # Link the target to its library dependencies.
+    if(THIS_DEPENDS)
+        target_link_libraries(${target} ${THIS_DEPENDS})
+    endif()
+    
+    # Add install rule for compiled target.
+    install(TARGETS "${target}" DESTINATION "${THIS_DESTINATION}")
 endmacro()
