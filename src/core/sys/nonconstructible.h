@@ -23,11 +23,11 @@
 \*****************************************************************************/
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-#	pragma once
+# pragma once
 #endif
 
 #ifndef CDK_NONCONSTRUCTIBLE_H
-#	define CDK_NONCONSTRUCTIBLE_H
+# define CDK_NONCONSTRUCTIBLE_H
 
 //=============================================================================
 //                                   HEADERS
@@ -37,7 +37,7 @@
 #include "noncopyable.h"
 
 #ifdef _MSC_VER
-#	pragma warning(disable : 4624)
+# pragma warning(disable : 4624)
 #endif
 
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
@@ -50,7 +50,7 @@ namespace CDK
 //=============================================================================
 
 /*!
- * \ingroup system
+ * \ingroup core
  *
  * \brief Utility class that makes any derived class non-constructible.
  *
@@ -65,20 +65,20 @@ class NonConstructible : public NonCopyable
 
 private:
 
-	/*!
-	 * \brief Disabled default constructor
-	 */
-	NonConstructible() {}
+  /*!
+   * \brief Disabled default constructor
+   */
+  NonConstructible() {}
 
-	/*!
-	 * \brief Disabled default destructor
-	 */
-	virtual ~NonConstructible() throw() {}
+  /*!
+   * \brief Disabled default destructor
+   */
+  virtual ~NonConstructible() {}
 
-};		// class NonConstructible
+};      // class NonConstructible
 
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 
-}		// namespace CDK
+}       // namespace CDK
 
-#endif	// CDK_NONCONSTRUCTIBLE_H
+#endif  // CDK_NONCONSTRUCTIBLE_H

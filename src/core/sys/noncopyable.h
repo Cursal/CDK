@@ -23,11 +23,11 @@
 \*****************************************************************************/
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-#	pragma once
+# pragma once
 #endif
 
 #ifndef CDK_NONCOPYABLE_H
-#	define CDK_NONCOPYABLE_H
+# define CDK_NONCOPYABLE_H
 
 //=============================================================================
 //                                   HEADERS
@@ -45,7 +45,7 @@ namespace CDK
 //=============================================================================
 
 /*!
- * \ingroup system
+ * \ingroup core
  *
  * \brief Utility class that makes any derived class non-copyable.
  *
@@ -60,10 +60,10 @@ class NonCopyable
 
 protected:
 
-	/*!
-	 * \brief Default constructor
-	 */
-	NonCopyable() {}
+  /*!
+   * \brief Default constructor
+   */
+  NonCopyable() {}
 
 //=============================================================================
 //                                   PRIVATE
@@ -71,20 +71,20 @@ protected:
 
 private:
 
-	/*!
-	 * \brief Disabled copy constructor
-	 */
-	NonCopyable(const NonCopyable &);
+  /*!
+   * \brief Disabled copy constructor
+   */
+  NonCopyable(const NonCopyable &);
 
-	/*!
-	 * \brief Disabled assignment operator
-	 */
-	NonCopyable &operator=(const NonCopyable &);
+  /*!
+   * \brief Disabled assignment operator
+   */
+  NonCopyable &operator=(const NonCopyable &);
 
-};		// class NonCopyable
+};      // class NonCopyable
 
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 
-}		// namespace CDK
+}       // namespace CDK
 
-#endif	// CDK_NONCOPYABLE_H
+#endif  // CDK_NONCOPYABLE_H

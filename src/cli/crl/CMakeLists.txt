@@ -26,14 +26,12 @@
 #==============================================================================
 
 set(TARGET_NAME  "crl")
-set(TARGET_GROUP "cli")
 
 #==============================================================================
 #                                 SOURCE FILES
 #==============================================================================
 
 file(GLOB_RECURSE TARGET_SRCS "*.cpp")
-source_group("" FILES "${TARGET_SRCS}")
 
 #==============================================================================
 #                                 DEPENDENCIES
@@ -49,15 +47,15 @@ find_package(
 include_directories("${Boost_INCLUDE_DIRS}")
 
 # Build the list of external libraries to link.
-set(TARGET_LIBS "${Boost_LIBRARIES}")
+set(TARGET_LIBS "cdk-core" "${Boost_LIBRARIES}")
 
 #==============================================================================
 #                                    TARGET
 #==============================================================================
 
-cdk_add_target(
+cdk_add_executable(
     "${TARGET_NAME}"
-    GROUP   "${TARGET_GROUP}"
-    SOURCES "${TARGET_SRCS}"
-    DEPENDS "${TARGET_LIBS}"
+    SOURCES     "${TARGET_SRCS}"
+    DEPENDS     "${TARGET_LIBS}"
+    DESTINATION "bin/cli"
 )

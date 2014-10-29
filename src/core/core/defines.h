@@ -23,11 +23,11 @@
 \*****************************************************************************/
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-#	pragma once
+# pragma once
 #endif
 
 #ifndef CDK_DEFINES_H
-#	define CDK_DEFINES_H
+# define CDK_DEFINES_H
 
 //=============================================================================
 //                                   MACROS
@@ -45,4 +45,4 @@
 
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 
-#endif	// CDK_DEFINES_H
+#endif  // CDK_DEFINES_H

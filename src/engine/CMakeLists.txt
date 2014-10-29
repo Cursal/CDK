@@ -32,14 +32,13 @@ set(TARGET_NAME "engine")
 #==============================================================================
 
 file(GLOB_RECURSE TARGET_SRCS "*.cpp")
-source_group("" FILES "${TARGET_SRCS}")
 
 #==============================================================================
 #                                 DEPENDENCIES
 #==============================================================================
 
 # Find external libraries.
-find_package(Boost 1.56 REQUIRED COMPONENTS "filesystem" "system" "thread")
+find_package(Boost 1.56 REQUIRED COMPONENTS "filesystem" "system")
 find_package(Ruby 2.1 REQUIRED)
 find_package(SFML 2.1 REQUIRED COMPONENTS "graphics" "window" "system")
 
@@ -61,21 +60,28 @@ include_directories(
 # Build the list of external libraries to link.
 set(
     TARGET_LIBS
+    "cdk-core"
     "${Boost_LIBRARIES}"
     "${RUBY_LIBRARY}"
     "${SFML_LIBRARIES}"
 )
 
-# Build the list of required files to install.
-set(TARGET_FILES "${LIBFFI_DLLS}" "${RUBY_DLLS}" "${SFML_DLLS}" "${ZLIB_DLLS}")
+# Build the list of external files to install.
+set(
+    TARGET_EXTS
+    "${LIBFFI_DLLS}"
+    "${RUBY_DLLS}"
+    "${SFML_DLLS}"
+    "${ZLIB_DLLS}"
+)
 
 #==============================================================================
 #                                    TARGET
 #==============================================================================
 
-cdk_add_target(
+cdk_add_executable(
     "${TARGET_NAME}"
-    SOURCES  "${TARGET_SRCS}"
-    DEPENDS  "${TARGET_LIBS}"
-    REQUIRES "${TARGET_FILES}"
+    SOURCES   "${TARGET_SRCS}"
+    DEPENDS   "${TARGET_LIBS}"
+    EXTERNALS "${TARGET_EXTS}"
 )

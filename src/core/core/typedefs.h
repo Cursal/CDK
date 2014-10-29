@@ -23,19 +23,11 @@
 \*****************************************************************************/
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
-#	pragma once
+# pragma once
 #endif
 
 #ifndef CDK_TYPEDEFS_H
-#	define CDK_TYPEDEFS_H
-
-//=============================================================================
-//                                   HEADERS
-//=============================================================================
-
-#include <stdint.h>
-
-/* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
+# define CDK_TYPEDEFS_H
 
 namespace CDK
 {
@@ -44,19 +36,8 @@ namespace CDK
 //                                  TYPEDEFS
 //=============================================================================
 
-typedef int8_t		int8;	// –128 to 127
-typedef int16_t		int16;	// –32.768 to 32.767
-typedef int32_t		int32;	// –2.147.483.648 tos 2.147.483.647
-typedef int64_t		int64;	// –9.223.372.036.854.775.808 to 
-							//  9.223.372.036.854.775.807
-
-typedef uint8_t		uint8;	// 0 to 255
-typedef uint16_t	uint16;	// 0 to 65.535
-typedef uint32_t	uint32;	// 0 to 4.294.967.295
-typedef uint64_t	uint64;	// 0 to 18.446.744.073.709.551.615
-
 /* -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -- */
 
-}		// namespace CDK
+}       // namespace CDK
 
-#endif	// CDK_TYPEDEFS_H
+#endif  // CDK_TYPEDEFS_H
